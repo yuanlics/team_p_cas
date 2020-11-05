@@ -10,7 +10,7 @@ n_clients=$3
 print=$4
 level=$5
 
-n_local_clients=$[n_clients / 5]
+echo $print
 
 mkdir -p ~/log
 

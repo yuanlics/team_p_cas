@@ -56,46 +56,49 @@ with open(xact_dir+'/'+client_id+'.txt') as f:
     latency = []
     t1 = time.time()
     while row_cnt < len(lines):
-        inputs = lines[row_cnt].strip('\n').split(',')
-        row_cnt += 1
-        category = inputs[0]
-        
-        t3 = time.time()
-        if category == 'N':
-            i_id = []
-            w_id = []
-            quantity = []
-            num_items = int(inputs[4])
-            tmp = row_cnt
-            while row_cnt < tmp+num_items:
-                item = lines[row_cnt].strip('\n').split(',')
-                row_cnt += 1
-                i_id.append(int(item[0]))
-                w_id.append(int(item[1]))
-                quantity.append(int(item[2]))
-            res = no.exec_xact(int(inputs[1]), int(inputs[2]), int(inputs[3]), num_items, i_id, w_id, quantity)
-        elif category == 'P':
-            res = pa.exec_xact(int(inputs[1]), int(inputs[2]), int(inputs[3]), float(inputs[4]))
-        elif category == 'D':
-            res = de.exec_xact(int(inputs[1]), int(inputs[2]))
-        elif category == 'O':
-            res = os.exec_xact(int(inputs[1]), int(inputs[2]), int(inputs[3]))
-        elif category == 'S':
-            res = sl.exec_xact(int(inputs[1]), int(inputs[2]), int(inputs[3]), int(inputs[4]))
-        elif category == 'I':
-            res = pi.exec_xact(int(inputs[1]), int(inputs[2]), int(inputs[3]))
-        elif category == 'T':
-            res = tb.exec_xact()         
-        elif category == 'R':
-            res = rc.exec_xact(int(inputs[1]), int(inputs[2]), int(inputs[3]))
+        try:
+            inputs = lines[row_cnt].strip('\n').split(',')
+            row_cnt += 1
+            category = inputs[0]
 
-        t4 = time.time()
-        latency.append(round((t4-t3)*1000,2))
-        xact_cnt += 1
-        print('Client', client_id, 'Current Xact:', xact_cnt)
-        
-        if args.print:
-            sys.stdout.write('Xact: {0}\n{1}\n'.format(xact_cnt, res))
+            t3 = time.time()
+            if category == 'N':
+                i_id = []
+                w_id = []
+                quantity = []
+                num_items = int(inputs[4])
+                tmp = row_cnt
+                while row_cnt < tmp+num_items:
+                    item = lines[row_cnt].strip('\n').split(',')
+                    row_cnt += 1
+                    i_id.append(int(item[0]))
+                    w_id.append(int(item[1]))
+                    quantity.append(int(item[2]))
+                res = no.exec_xact(int(inputs[1]), int(inputs[2]), int(inputs[3]), num_items, i_id, w_id, quantity)
+            elif category == 'P':
+                res = pa.exec_xact(int(inputs[1]), int(inputs[2]), int(inputs[3]), float(inputs[4]))
+            elif category == 'D':
+                res = de.exec_xact(int(inputs[1]), int(inputs[2]))
+            elif category == 'O':
+                res = os.exec_xact(int(inputs[1]), int(inputs[2]), int(inputs[3]))
+            elif category == 'S':
+                res = sl.exec_xact(int(inputs[1]), int(inputs[2]), int(inputs[3]), int(inputs[4]))
+            elif category == 'I':
+                res = pi.exec_xact(int(inputs[1]), int(inputs[2]), int(inputs[3]))
+            elif category == 'T':
+                res = tb.exec_xact()         
+            elif category == 'R':
+                res = rc.exec_xact(int(inputs[1]), int(inputs[2]), int(inputs[3]))
+
+            t4 = time.time()
+            latency.append(round((t4-t3)*1000,2))
+            xact_cnt += 1
+            print('Client', client_id, 'Current Xact:', xact_cnt)
+
+            if args.print:
+                sys.stdout.write('Xact: {0}\n{1}\n'.format(xact_cnt, res))
+        except Exception as e:
+            continue
 
 print(len(lines), row_cnt, xact_cnt)
 t2 = time.time()
