@@ -39,7 +39,7 @@ rows = sess.execute("SELECT sum(ol_amount), sum(ol_quantity) FROM order_line", t
 res.append(float(rows.one().system_sum_ol_amount))
 res.append(float(rows.one().system_sum_ol_quantity))
 
-rows = sess.execute("SELECT sum(s_quantity), sum(s_ytd), sum(s_order_cnt), sum(s_remote_cnt) FROM stock")
+rows = sess.execute("SELECT sum(s_quantity), sum(s_ytd), sum(s_order_cnt), sum(s_remote_cnt) FROM stock", timeout=100)
 res.append(float(rows.one().system_sum_s_quantity))
 res.append(float(rows.one().system_sum_s_ytd))
 res.append(rows.one().system_sum_s_order_cnt)
@@ -47,17 +47,17 @@ res.append(rows.one().system_sum_s_remote_cnt)
 
 print('db state:', res)
 
-with open(nc+'_'+level+'_dbstate.csv', 'w') as f:
+with open('log/' + nc+'_'+level+'_dbstate.csv', 'w') as f:
     writer = csv.writer(f)
     writer.writerow(res)
 
 throughputs = []
 for i in range(int(nc)):
-    with open(nc+'_'+level+'_client'+str(i+1)+'.csv', 'w') as f:
+    with open('~/log/' + nc+'_'+level+'_client'+str(i+1)+'.csv', 'r') as f:
         csv_reader = csv.reader(f)
         for row in csv_reader:
             throughputs.append(row[3])
 
-with open(nc+'_'+level+'_throughput.csv', 'w') as f:
+with open('log/' + nc+'_'+level+'_throughput.csv', 'w') as f:
     writer = csv.writer(f)
     writer.writerow([np.min(throughputs), round(np.mean(throughputs),2), np.max(throughputs)])
