@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-# bash run_node.sh /temp/team_p/project-files/xact-files <node_id> <n_clients> <True/False> <QUORUM/ONE>
+# bash run_node.sh /temp/team_p/project-files/xact-files/ <node_id> <n_clients> <True/False> <QUORUM/ONE>
 # E.g.
-# bash run_node.sh /temp/team_p/project-files/xact-files 1 10 False QUORUM
+# bash run_node.sh /temp/team_p/project-files/xact-files/ 1 10 False QUORUM
 
 xact_dir=$1
 node_id=$2
