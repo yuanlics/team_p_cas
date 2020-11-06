@@ -8,6 +8,7 @@ import numpy as np
 from cassandra import ConsistencyLevel
 from cassandra.cluster import Cluster
 from cassandra.cluster import ExecutionProfile
+from cassandra.cluster import EXEC_PROFILE_DEFAULT
 
 from new_order import NewOrder
 from payment import Payment
