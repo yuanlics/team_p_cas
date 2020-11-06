@@ -8,9 +8,9 @@ export cassandra_root=/temp/team_p/apache-cassandra-3.11.6/
 export cql_dir=/temp/team_p/apache-cassandra-3.11.6/bin/cqlsh
 export project_dir=/temp/team_p/team_p_cas/
 
-for n_clients in 20
+for n_clients in 40
 do
-    for level in "ONE"
+    for level in "QUORUM"
     do
         ssh xcnc35 "cd $project_dir && git pull && python3 load.py --data-dir $data_dir --cql-dir $cql_dir --ip $local_ip"
         echo "Reloaded DB"
