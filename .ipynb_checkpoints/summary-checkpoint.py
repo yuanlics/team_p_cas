@@ -17,7 +17,7 @@ ip = args.ip
 
 cluster = Cluster(contact_points=[ip]*20, connect_timeout=100)
 sess = cluster.connect('wholesale')
-sess.default_timeout = 300.0
+sess.default_timeout = 3000.0
 print(sess.default_timeout)
 
 res = []
