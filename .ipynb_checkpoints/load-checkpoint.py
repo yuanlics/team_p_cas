@@ -237,87 +237,87 @@ sess.execute(create_view_order_by_customer_q, timeout=300)
 sess.execute(create_order_line_by_item_q, timeout=300)
 print('Tables and views are created')
 
-# augment customer with w_name and d_name
-cols = 'c_w_id,c_d_id,c_id,c_first,c_middle,c_last,c_street_1,c_street_2,c_city,c_state,c_zip,c_phone,c_since,c_credit,c_credit_lim,c_discount,c_balance,c_ytd_payment,c_payment_cnt,c_delivery_cnt,c_data'.split(',')
-df_customer = pd.read_csv(DATA_DIR + '/customer.csv', names=cols)
-print(df_customer.shape)
+# # augment customer with w_name and d_name
+# cols = 'c_w_id,c_d_id,c_id,c_first,c_middle,c_last,c_street_1,c_street_2,c_city,c_state,c_zip,c_phone,c_since,c_credit,c_credit_lim,c_discount,c_balance,c_ytd_payment,c_payment_cnt,c_delivery_cnt,c_data'.split(',')
+# df_customer = pd.read_csv(DATA_DIR + '/customer.csv', names=cols)
+# print(df_customer.shape)
 
-cols = 'w_id,w_name,w_street_1,w_street_2,w_city,w_state,w_zip,w_tax,w_ytd'.split(',')
-df_warehouse = pd.read_csv(DATA_DIR + '/warehouse.csv', names=cols)
+# cols = 'w_id,w_name,w_street_1,w_street_2,w_city,w_state,w_zip,w_tax,w_ytd'.split(',')
+# df_warehouse = pd.read_csv(DATA_DIR + '/warehouse.csv', names=cols)
 
-cols = 'd_w_id,d_id,d_name,d_street_1,d_street_2,d_city,d_state,d_zip,d_tax,d_ytd,d_next_o_id'.split(',')
-df_district = pd.read_csv(DATA_DIR + '/district.csv', names=cols)
+# cols = 'd_w_id,d_id,d_name,d_street_1,d_street_2,d_city,d_state,d_zip,d_tax,d_ytd,d_next_o_id'.split(',')
+# df_district = pd.read_csv(DATA_DIR + '/district.csv', names=cols)
 
-cols = 'c_w_id,c_d_id,c_id,c_first,c_middle,c_last,c_street_1,c_street_2,c_city,c_state,c_zip,c_phone,c_since,c_credit,c_credit_lim,c_discount,c_balance,c_ytd_payment,c_payment_cnt,c_delivery_cnt,c_data,w_name,d_name'.split(',')
-df_wd = pd.merge(df_district, df_warehouse, how='left', left_on='d_w_id', right_on='w_id')
-df_wd = df_wd[['d_w_id', 'd_id', 'd_name', 'w_name']]
-df_customer_aug = pd.merge(df_customer, df_wd, how='left', left_on=['c_w_id', 'c_d_id'], right_on=['d_w_id', 'd_id'])
-df_customer_aug = df_customer_aug[cols]
-print(df_customer_aug.shape)
+# cols = 'c_w_id,c_d_id,c_id,c_first,c_middle,c_last,c_street_1,c_street_2,c_city,c_state,c_zip,c_phone,c_since,c_credit,c_credit_lim,c_discount,c_balance,c_ytd_payment,c_payment_cnt,c_delivery_cnt,c_data,w_name,d_name'.split(',')
+# df_wd = pd.merge(df_district, df_warehouse, how='left', left_on='d_w_id', right_on='w_id')
+# df_wd = df_wd[['d_w_id', 'd_id', 'd_name', 'w_name']]
+# df_customer_aug = pd.merge(df_customer, df_wd, how='left', left_on=['c_w_id', 'c_d_id'], right_on=['d_w_id', 'd_id'])
+# df_customer_aug = df_customer_aug[cols]
+# print(df_customer_aug.shape)
 
-df_customer_aug.to_csv(DATA_DIR + '/customer-aug.csv', index=False, header=False)
-print('customer aug is created')
+# df_customer_aug.to_csv(DATA_DIR + '/customer-aug.csv', index=False, header=False)
+# print('customer aug is created')
 
-# augment order_line with i_name
-cols = 'ol_w_id,ol_d_id,ol_o_id,ol_number,ol_i_id,ol_delivery_d,ol_amount,ol_supply_w_id,ol_quantity,ol_dist_info'.split(',')
-df_order_line = pd.read_csv(DATA_DIR + '/order-line.csv', names=cols)
-print(df_order_line.shape)
+# # augment order_line with i_name
+# cols = 'ol_w_id,ol_d_id,ol_o_id,ol_number,ol_i_id,ol_delivery_d,ol_amount,ol_supply_w_id,ol_quantity,ol_dist_info'.split(',')
+# df_order_line = pd.read_csv(DATA_DIR + '/order-line.csv', names=cols)
+# print(df_order_line.shape)
 
-cols = 'i_id,i_name,i_price,i_im_id,i_data'.split(',')
-df_item = pd.read_csv(DATA_DIR + '/item.csv', names=cols)
+# cols = 'i_id,i_name,i_price,i_im_id,i_data'.split(',')
+# df_item = pd.read_csv(DATA_DIR + '/item.csv', names=cols)
 
-cols = 'ol_w_id,ol_d_id,ol_o_id,ol_number,ol_i_id,ol_delivery_d,ol_amount,ol_supply_w_id,ol_quantity,ol_dist_info,i_name'.split(',')
-df_order_line_aug = pd.merge(df_order_line, df_item, how='left', left_on='ol_i_id', right_on='i_id')
-df_order_line_aug = df_order_line_aug[cols]
-print(df_order_line_aug.shape)
+# cols = 'ol_w_id,ol_d_id,ol_o_id,ol_number,ol_i_id,ol_delivery_d,ol_amount,ol_supply_w_id,ol_quantity,ol_dist_info,i_name'.split(',')
+# df_order_line_aug = pd.merge(df_order_line, df_item, how='left', left_on='ol_i_id', right_on='i_id')
+# df_order_line_aug = df_order_line_aug[cols]
+# print(df_order_line_aug.shape)
 
-df_order_line_aug.to_csv(DATA_DIR + '/order-line-aug.csv', index=False, header=False)
-print('order line aug is created')
+# df_order_line_aug.to_csv(DATA_DIR + '/order-line-aug.csv', index=False, header=False)
+# print('order line aug is created')
 
-# augment stock with i_name and i_price
-cols = 's_w_id,s_i_id,s_quantity,s_ytd,s_order_cnt,s_remote_cnt,s_dist_01,s_dist_02,s_dist_03,s_dist_04,s_dist_05,s_dist_06,s_dist_07,s_dist_08,s_dist_09,s_dist_10,s_data'.split(',')
-df_stock = pd.read_csv(DATA_DIR + '/stock.csv', names=cols)
-print(df_stock.shape)
+# # augment stock with i_name and i_price
+# cols = 's_w_id,s_i_id,s_quantity,s_ytd,s_order_cnt,s_remote_cnt,s_dist_01,s_dist_02,s_dist_03,s_dist_04,s_dist_05,s_dist_06,s_dist_07,s_dist_08,s_dist_09,s_dist_10,s_data'.split(',')
+# df_stock = pd.read_csv(DATA_DIR + '/stock.csv', names=cols)
+# print(df_stock.shape)
 
-cols = 'i_id,i_name,i_price,i_im_id,i_data'.split(',')
-df_item = pd.read_csv(DATA_DIR + '/item.csv', names=cols)
+# cols = 'i_id,i_name,i_price,i_im_id,i_data'.split(',')
+# df_item = pd.read_csv(DATA_DIR + '/item.csv', names=cols)
 
-cols = 's_w_id,s_i_id,s_quantity,s_ytd,s_order_cnt,s_remote_cnt,s_dist_01,s_dist_02,s_dist_03,s_dist_04,s_dist_05,s_dist_06,s_dist_07,s_dist_08,s_dist_09,s_dist_10,s_data,i_name,i_price'.split(',')
-df_stock_aug = pd.merge(df_stock, df_item, how='left', left_on='s_i_id', right_on='i_id')
-df_stock_aug = df_stock_aug[cols]
-print(df_stock_aug.shape)
+# cols = 's_w_id,s_i_id,s_quantity,s_ytd,s_order_cnt,s_remote_cnt,s_dist_01,s_dist_02,s_dist_03,s_dist_04,s_dist_05,s_dist_06,s_dist_07,s_dist_08,s_dist_09,s_dist_10,s_data,i_name,i_price'.split(',')
+# df_stock_aug = pd.merge(df_stock, df_item, how='left', left_on='s_i_id', right_on='i_id')
+# df_stock_aug = df_stock_aug[cols]
+# print(df_stock_aug.shape)
 
-df_stock_aug.to_csv(DATA_DIR + '/stock-aug.csv', index=False, header=False)
-print('stock aug is created')
+# df_stock_aug.to_csv(DATA_DIR + '/stock-aug.csv', index=False, header=False)
+# print('stock aug is created')
 
-# augment district with d_next_deliver_o_id
-map_dict = {}
-with open(DATA_DIR + '/order.csv') as f:
-    csv_reader = csv.reader(f)
-    for row in csv_reader:
-        key = (int(row[0]), int(row[1]))
-        if row[4] == "":
-            if key not in map_dict:
-                map_dict[key] = int(row[2])
+# # augment district with d_next_deliver_o_id
+# map_dict = {}
+# with open(DATA_DIR + '/order.csv') as f:
+#     csv_reader = csv.reader(f)
+#     for row in csv_reader:
+#         key = (int(row[0]), int(row[1]))
+#         if row[4] == "":
+#             if key not in map_dict:
+#                 map_dict[key] = int(row[2])
 
-deliver_ids = []
-for w_id in range(1, 11):
-    for d_id in range(1, 11):
-        deliver_ids.append([w_id, d_id, map_dict[(w_id, d_id)]])
+# deliver_ids = []
+# for w_id in range(1, 11):
+#     for d_id in range(1, 11):
+#         deliver_ids.append([w_id, d_id, map_dict[(w_id, d_id)]])
 
-df_deliver = pd.DataFrame(deliver_ids, columns=['w_id', 'did', 'deliver_id'])
+# df_deliver = pd.DataFrame(deliver_ids, columns=['w_id', 'did', 'deliver_id'])
         
-cols = 'd_w_id,d_id,d_name,d_street_1,d_street_2,d_city,d_state,d_zip,d_tax,d_ytd,d_next_o_id'.split(',')
-df_district = pd.read_csv(DATA_DIR + '/district.csv', names=cols)
-print(df_district.shape)
+# cols = 'd_w_id,d_id,d_name,d_street_1,d_street_2,d_city,d_state,d_zip,d_tax,d_ytd,d_next_o_id'.split(',')
+# df_district = pd.read_csv(DATA_DIR + '/district.csv', names=cols)
+# print(df_district.shape)
 
-cols = 'd_w_id,d_id,d_name,d_street_1,d_street_2,d_city,d_state,d_zip,d_tax,d_ytd,d_next_o_id,deliver_id'.split(',')
-df_district_aug = pd.merge(df_district, df_deliver, how='left', left_on=['d_w_id', 'd_id'], right_on=['w_id', 'did'])
-df_district_aug = df_district_aug[cols]
-print(df_district_aug.shape)
+# cols = 'd_w_id,d_id,d_name,d_street_1,d_street_2,d_city,d_state,d_zip,d_tax,d_ytd,d_next_o_id,deliver_id'.split(',')
+# df_district_aug = pd.merge(df_district, df_deliver, how='left', left_on=['d_w_id', 'd_id'], right_on=['w_id', 'did'])
+# df_district_aug = df_district_aug[cols]
+# print(df_district_aug.shape)
 
-df_district_aug.to_csv(DATA_DIR + '/district-aug.csv', index=False, header=False)
-print('district aug is created')
+# df_district_aug.to_csv(DATA_DIR + '/district-aug.csv', index=False, header=False)
+# print('district aug is created')
 
 for q in load_qs:
     comm = CQL_DIR + ' -e "' + q + '"'
