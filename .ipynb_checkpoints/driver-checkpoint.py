@@ -49,6 +49,10 @@ pre_get_deliver_id = sess.prepare(
 rows = sess.execute(pre_get_deliver_id.bind((1, 1)), execution_profile='client')
 for row in rows:
     print(row)
+print(consist_level)
+tb = TopBalance(sess, consist_level)
+res=tb.exec_xact()
+print(res)
 
 # if consist_level == 'ONE':
 #     profile1 = ExecutionProfile(consistency_level=ConsistencyLevel.ONE, request_timeout=300.0, load_balancing_policy=WhiteListRoundRobinPolicy(['192.168.48.184', '192.168.48.185', '192.168.48.186', '192.168.48.187', '192.168.48.188']))
