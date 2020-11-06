@@ -56,11 +56,10 @@ with open(xact_dir+'/'+client_id+'.txt') as f:
     latency = []
     t1 = time.time()
     while row_cnt < len(lines):
+        inputs = lines[row_cnt].strip('\n').split(',')
+        row_cnt += 1
+        category = inputs[0]
         try:
-            inputs = lines[row_cnt].strip('\n').split(',')
-            row_cnt += 1
-            category = inputs[0]
-
             t3 = time.time()
             if category == 'N':
                 i_id = []
@@ -98,6 +97,8 @@ with open(xact_dir+'/'+client_id+'.txt') as f:
             if args.print:
                 sys.stdout.write('Xact: {0}\n{1}\n'.format(xact_cnt, res))
         except Exception as e:
+            with open('err.txt','a') as f:
+                f.write(client_id+': '+str(inputs)+'\n'+str(e)+'\n')
             continue
 
 print(len(lines), row_cnt, xact_cnt)
