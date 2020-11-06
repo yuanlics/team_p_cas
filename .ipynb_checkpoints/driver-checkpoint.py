@@ -48,7 +48,7 @@ sess.default_time_out=300
 pre_get_deliver_id = sess.prepare(
             "SELECT d_next_o_id, d_next_deliver_o_id FROM district WHERE d_w_id = ? AND d_id = ?"
         )
-rows = sess.execute(pre_get_deliver_id.bind((1, 1)), execution_profile='client')
+rows = sess.execute(pre_get_deliver_id.bind((1, 1)), execution_profile='all')
 for row in rows:
     print(row)
 print(consist_level)
