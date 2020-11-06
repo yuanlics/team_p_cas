@@ -35,50 +35,49 @@ client_id = args.client_id
 consist_level = args.level
 ip = args.ip
 
-
 cluster = Cluster(contact_points=[ip]*20, connect_timeout=100)
-profile = ExecutionProfile(consistency_level=ConsistencyLevel.ONE)
-cluster.add_execution_profile('one', profile)
-profile2 = ExecutionProfile(consistency_level=ConsistencyLevel.ALL)
-cluster.add_execution_profile('all', profile2)
-sess = cluster.connect('wholesale')
-sess.default_time_out=300
-# sess.default_consistency_level=ConsistencyLevel.ONE
+if consist_level == 'ONE':
+    profile1 = ExecutionProfile(consistency_level=ConsistencyLevel.ONE, request_timeout=300.0)
+    cluster.add_execution_profile('one', profile1)
+    profile2 = ExecutionProfile(consistency_level=ConsistencyLevel.ALL, request_timeout=300.0)
+    cluster.add_execution_profile('all', profile2)
+elif consist_level == 'QUORUM':
+    profile = ExecutionProfile(consistency_level=ConsistencyLevel.QUORUM, request_timeout=300.0)
+    cluster.add_execution_profile('quorum', profile)
 
-pre_get_deliver_id = sess.prepare(
-            "SELECT d_next_o_id, d_next_deliver_o_id FROM district WHERE d_w_id = ? AND d_id = ?"
-        )
-rows = sess.execute(pre_get_deliver_id.bind((1, 1)), execution_profile='all')
-for row in rows:
-    print(row)
-print(consist_level)
+sess = cluster.connect('wholesale')
+sess.default_timeout = 300.0
+# print(sess.default_timeout)
+no = NewOrder(sess, consist_level)
+pa = Payment(sess, consist_level)
+de = Delivery(sess, consist_level)
+os = OrderStatus(sess, consist_level)
+sl = StockLevel(sess, consist_level)
+pi = PopularItem(sess, consist_level)
 tb = TopBalance(sess, consist_level)
-res=tb.exec_xact()
+rc = RelatedCustomer(sess, consist_level)
+
+w_id = 1
+d_id = 1
+c_id = 1232
+payment = 3156.05
+res = pa.exec_xact(w_id, d_id, c_id, payment)
 print(res)
 
-# if consist_level == 'ONE':
-#     profile1 = ExecutionProfile(consistency_level=ConsistencyLevel.ONE, request_timeout=300.0, load_balancing_policy=WhiteListRoundRobinPolicy(['192.168.48.184', '192.168.48.185', '192.168.48.186', '192.168.48.187', '192.168.48.188']))
-# #     cluster.add_execution_profile('one', profile1)
-#     profile2 = ExecutionProfile(consistency_level=ConsistencyLevel.ALL, request_timeout=300.0, load_balancing_policy=WhiteListRoundRobinPolicy(['192.168.48.184', '192.168.48.185', '192.168.48.186', '192.168.48.187', '192.168.48.188']))
-# #     cluster.add_execution_profile('all', profile2)
-#     profiles = {'one': profile1, 'all': profile2}
-# elif consist_level == 'QUORUM':
-#     profile = ExecutionProfile(consistency_level=ConsistencyLevel.QUORUM, request_timeout=300.0, load_balancing_policy=WhiteListRoundRobinPolicy(['192.168.48.184', '192.168.48.185', '192.168.48.186', '192.168.48.187', '192.168.48.188']))
-# #     cluster.add_execution_profile('quorum', profile)
-#     profiles = {'quorum': profile, 'quorum': profile}
+res = de.exec_xact(1,1)
+print(res)
 
-# cluster = Cluster(contact_points=[ip]*20, connect_timeout=100, execution_profiles={EXEC_PROFILE_DEFAULT: profiles})
-# sess = cluster.connect('wholesale')
-# sess.default_timeout = 300.0
-# # print(sess.default_timeout)
-# no = NewOrder(sess, consist_level)
-# pa = Payment(sess, consist_level)
-# de = Delivery(sess, consist_level)
-# os = OrderStatus(sess, consist_level)
-# sl = StockLevel(sess, consist_level)
-# pi = PopularItem(sess, consist_level)
-# tb = TopBalance(sess, consist_level)
-# rc = RelatedCustomer(sess, consist_level)
+res = os.exec_xact(1,2,1081)
+print(res)
+
+res = pi.exec_xact(1,1,2)
+print(res)
+
+res = tb.exec_xact()
+print(res)
+
+res = sl.exec_xact(1,1,13,34)
+print(res)
 
 # with open(xact_dir+'/'+client_id+'.txt') as f:
 #     lines = f.readlines()
