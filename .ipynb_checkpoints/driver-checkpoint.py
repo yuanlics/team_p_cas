@@ -93,7 +93,7 @@ with open(xact_dir+'/'+client_id+'.txt') as f:
             t4 = time.time()
             latency.append(round((t4-t3)*1000,2))
             xact_cnt += 1
-            print('Client', client_id, 'Current Xact:', xact_cnt)
+#             print('Client', client_id, 'Current Xact:', xact_cnt)
 
             if args.print:
                 sys.stdout.write('Xact: {0}\n{1}\n'.format(xact_cnt, res))
