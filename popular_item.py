@@ -1,7 +1,11 @@
 # popular item xact
 class PopularItem():
-    def __init__(self, sess):
+    def __init__(self, sess, level):
         self.sess = sess
+        if level == 'ONE':
+            self.pro = ['one', 'all']
+        elif level == 'QUORUM':
+            self.pro = ['quorum', 'quorum']
         self.pre_get_orders = sess.prepare(
             "SELECT o_id, o_c_id, o_entry_d FROM orders WHERE o_w_id = ? AND o_d_id = ? LIMIT ?"
         )
@@ -19,18 +23,18 @@ class PopularItem():
         )
         
     def get_orders(self, w_id, d_id, order_num):
-        rows = self.sess.execute(self.pre_get_orders.bind((w_id, d_id, order_num)))
+        rows = self.sess.execute(self.pre_get_orders.bind((w_id, d_id, order_num)), execution_profile=self.pro[0])
         return list(rows)
 
     def get_customer(self, w_id, d_id, c_id):
-        rows = self.sess.execute(self.pre_get_customer.bind((w_id, d_id, c_id)))
+        rows = self.sess.execute(self.pre_get_customer.bind((w_id, d_id, c_id)), execution_profile=self.pro[0])
         return rows.one()
     
     def get_popular_items(self, w_id, d_id, o_id):
-        rows = self.sess.execute(self.pre_get_top_quantity.bind((w_id, d_id, o_id))).one()
+        rows = self.sess.execute(self.pre_get_top_quantity.bind((w_id, d_id, o_id)), execution_profile=self.pro[0]).one()
         if rows is None:
             raise Exception('can not find top quantity')
-        rows = self.sess.execute(self.pre_get_items.bind((w_id, d_id, o_id, rows.ol_quantity)))
+        rows = self.sess.execute(self.pre_get_items.bind((w_id, d_id, o_id, rows.ol_quantity)), execution_profile=self.pro[0])
         return list(rows)
 
     def exec_xact(self, w_id, d_id, order_num):

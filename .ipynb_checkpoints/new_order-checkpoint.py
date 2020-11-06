@@ -2,12 +2,16 @@
 from datetime import datetime
 
 class NewOrder():
-    def __init__(self, sess):
+    def __init__(self, sess, level):
         self.sess = sess
+        if level == 'ONE':
+            self.pro = ['one', 'all']
+        elif level == 'QUORUM':
+            self.pro = ['quorum', 'quorum']
         self.pre_get_district = sess.prepare(
             "SELECT d_next_o_id, d_tax FROM district WHERE d_w_id = ? AND d_id = ?"
         )
-        self.pre_inc_next_id = sess.prepare(
+        self.pre_update_next_id = sess.prepare(
             "UPDATE district SET d_next_o_id = ? WHERE d_w_id = ? AND d_id = ?"
         )
         self.pre_get_warehouse = sess.prepare(
@@ -30,24 +34,24 @@ class NewOrder():
         )
         
     def get_district(self, w_id, d_id):
-        rows = self.sess.execute(self.pre_get_district.bind((w_id, d_id)))
+        rows = self.sess.execute(self.pre_get_district.bind((w_id, d_id)), execution_profile=self.pro[0])
         return rows.one()
     
     def inc_next_id(self, w_id, d_id, new_id):
-        self.sess.execute(self.pre_inc_next_id.bind((new_id, w_id, d_id)))
+        self.sess.execute(self.pre_update_next_id.bind((new_id, w_id, d_id)), execution_profile=self.pro[1])
     
     def get_customer(self, w_id, d_id, c_id):
-        rows = self.sess.execute(self.pre_get_customer.bind((w_id, d_id, c_id)))
+        rows = self.sess.execute(self.pre_get_customer.bind((w_id, d_id, c_id)), execution_profile=self.pro[0])
         return rows.one()
     
     def get_warehouse(self, w_id):
-        rows = self.sess.execute(self.pre_get_warehouse.bind((w_id,)))
+        rows = self.sess.execute(self.pre_get_warehouse.bind((w_id,)), execution_profile=self.pro[0])
         return rows.one()
     
     def insert_order(self, w_id, d_id, c_id, o_id, o_entry_d, num_items, supplier_warehouse_arr):
         local_arr = [1 if sup_w_id == w_id else 0 for sup_w_id in supplier_warehouse_arr]
         all_local = min(local_arr)
-        self.sess.execute(self.pre_insert_order.bind((o_id, d_id, w_id, c_id, o_entry_d, num_items, all_local)))
+        self.sess.execute(self.pre_insert_order.bind((o_id, d_id, w_id, c_id, o_entry_d, num_items, all_local)), , execution_profile=self.pro[1])
         return o_entry_d
     
     def update_stock_and_order_line(self, w_id, d_id, o_id, num_items, item_number_arr, supplier_warehouse_arr, quantity_arr, w_tax, d_tax, c_discount):
@@ -60,7 +64,7 @@ class NewOrder():
             qty = quantity_arr[i]
             
             # update stock
-            rows = self.sess.execute(self.pre_get_stock.bind((sup_w_id, i_id)))
+            rows = self.sess.execute(self.pre_get_stock.bind((sup_w_id, i_id)), execution_profile=self.pro[0])
             stock = rows.one()
             
             adjusted_qty = stock.s_quantity - qty
@@ -70,7 +74,7 @@ class NewOrder():
             new_s_order_cnt = stock.s_order_cnt + 1
             new_s_remote_cnt = stock.s_remote_cnt + 1 if sup_w_id != w_id else 0
             
-            self.sess.execute(self.pre_update_stock.bind((adjusted_qty, new_s_ytd, new_s_order_cnt, new_s_remote_cnt, sup_w_id, i_id)))
+            self.sess.execute(self.pre_update_stock.bind((adjusted_qty, new_s_ytd, new_s_order_cnt, new_s_remote_cnt, sup_w_id, i_id)), execution_profile=self.pro[1])
             
             item_amount = qty * stock.s_i_price
             total_amount += item_amount
@@ -78,7 +82,7 @@ class NewOrder():
             # update order line
             ol_num = i + 1
             dist = 'S_DIST_{:0d}'.format(d_id)
-            self.sess.execute(self.pre_insert_order_line.bind((o_id, d_id, w_id, ol_num, i_id, sup_w_id, qty, item_amount, dist, stock.s_i_name)))
+            self.sess.execute(self.pre_insert_order_line.bind((o_id, d_id, w_id, ol_num, i_id, sup_w_id, qty, item_amount, dist, stock.s_i_name)), execution_profile=self.pro[1])
             
             info = {
                 'item_number': i_id,

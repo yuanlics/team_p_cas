@@ -3,6 +3,7 @@ import csv
 import numpy as np
 import argparse
 from cassandra.cluster import Cluster
+from cassandra import ConsistencyLevel
 
 parser = argparse.ArgumentParser(description='Summary')
 parser.add_argument('--nc', default='', type=str, help='Number of client')
@@ -18,6 +19,7 @@ ip = args.ip
 cluster = Cluster(contact_points=[ip]*20, connect_timeout=100)
 sess = cluster.connect('wholesale')
 sess.default_timeout = 3000.0
+sess.default_consistency_level = ConsistencyLevel.ALL
 print(sess.default_timeout)
 
 res = []

@@ -35,22 +35,26 @@ ip = args.ip
 
 cluster = Cluster(contact_points=[ip]*20, connect_timeout=100)
 if consist_level == 'ONE':
-    profile = ExecutionProfile(consistency_level=ConsistencyLevel.ONE, request_timeout=300.0)
+    profile1 = ExecutionProfile(consistency_level=ConsistencyLevel.ONE, request_timeout=300.0)
+    cluster.add_execution_profile('one', profile1)
+    profile2 = ExecutionProfile(consistency_level=ConsistencyLevel.ALL, request_timeout=300.0)
+    cluster.add_execution_profile('all', profile2)
 elif consist_level == 'QUORUM':
     profile = ExecutionProfile(consistency_level=ConsistencyLevel.QUORUM, request_timeout=300.0)
+    cluster.add_execution_profile('quorum', profile)
 
-cluster.add_execution_profile('client', profile)
+
 sess = cluster.connect('wholesale')
 sess.default_timeout = 300.0
 print(sess.default_timeout)
-no = NewOrder(sess)
-pa = Payment(sess)
-de = Delivery(sess)
-os = OrderStatus(sess)
-sl = StockLevel(sess)
-pi = PopularItem(sess)
-tb = TopBalance(sess)
-rc = RelatedCustomer(sess)
+no = NewOrder(sess, level)
+pa = Payment(sess, level)
+de = Delivery(sess, level)
+os = OrderStatus(sess, level)
+sl = StockLevel(sess, level)
+pi = PopularItem(sess, level)
+tb = TopBalance(sess, level)
+rc = RelatedCustomer(sess, level)
 
 with open(xact_dir+'/'+client_id+'.txt') as f:
     lines = f.readlines()
@@ -104,7 +108,7 @@ with open(xact_dir+'/'+client_id+'.txt') as f:
                 f.write(client_id+': '+str(inputs)+'\n'+traceback.format_exc()+'\n')
             continue
 
-print(len(lines), row_cnt, xact_cnt)
+print(xact_cnt)
 t2 = time.time()
 exec_time = round(t2-t1,2)
 throughput = round(xact_cnt/exec_time,2)

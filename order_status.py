@@ -1,7 +1,11 @@
 # order status xact
 class OrderStatus():
-    def __init__(self, sess):
+    def __init__(self, sess, level):
         self.sess = sess
+        if level == 'ONE':
+            self.pro = ['one', 'all']
+        elif level == 'QUORUM':
+            self.pro = ['quorum', 'quorum']
         self.pre_get_customer = sess.prepare(
             '''SELECT c_first, c_middle, c_last, c_balance FROM customer
             WHERE c_w_id = ? AND c_d_id = ? and c_id = ?'''
@@ -16,15 +20,15 @@ class OrderStatus():
         )
 
     def get_customer(self, w_id, d_id, c_id):
-        rows = self.sess.execute(self.pre_get_customer.bind((w_id, d_id, c_id)))
+        rows = self.sess.execute(self.pre_get_customer.bind((w_id, d_id, c_id)), execution_profile=self.pro[0])
         return rows.one()
 
     def get_order(self, w_id, d_id, c_id):
-        rows = self.sess.execute(self.pre_get_order.bind((w_id, d_id, c_id)))
+        rows = self.sess.execute(self.pre_get_order.bind((w_id, d_id, c_id)), execution_profile=self.pro[0])
         return rows.one()
 
     def get_items(self, w_id, d_id, o_id):
-        rows = self.sess.execute(self.pre_get_items.bind((w_id, d_id, o_id)))
+        rows = self.sess.execute(self.pre_get_items.bind((w_id, d_id, o_id)), execution_profile=self.pro[0])
         return rows
 
     def exec_xact(self, w_id, d_id, c_id):

@@ -2,8 +2,12 @@
 from datetime import datetime
 
 class Delivery():
-    def __init__(self, sess):
+    def __init__(self, sess, level):
         self.sess = sess
+        if level == 'ONE':
+            self.pro = ['one', 'all']
+        elif level == 'QUORUM':
+            self.pro = ['quorum', 'quorum']
         self.pre_get_deliver_id = sess.prepare(
             "SELECT d_next_o_id, d_next_deliver_o_id FROM district WHERE d_w_id = ? AND d_id = ?"
         )
@@ -32,19 +36,19 @@ class Delivery():
         )
 
     def process_next_deliver_id(self, w_id, d_id):
-        rows = self.sess.execute(self.pre_get_deliver_id.bind((w_id, d_id)))
+        rows = self.sess.execute(self.pre_get_deliver_id.bind((w_id, d_id)), execution_profile=self.pro[0])
         next_order_id = rows.one().d_next_o_id
         next_deliver_id = rows.one().d_next_deliver_o_id
         if next_order_id <= next_deliver_id:
             return None
-        self.sess.execute(self.pre_update_deliver_id.bind((next_deliver_id+1, w_id, d_id)))
+        self.sess.execute(self.pre_update_deliver_id.bind((next_deliver_id+1, w_id, d_id)), execution_profile=self.pro[1])
         return next_deliver_id
 
     def update_carrier_id(self, w_id, d_id, o_id, carrier_id):
-        self.sess.execute(self.pre_update_carrier_id.bind((carrier_id, w_id, d_id, o_id)))
+        self.sess.execute(self.pre_update_carrier_id.bind((carrier_id, w_id, d_id, o_id)), execution_profile=self.pro[1])
 
     def update_datetime(self, w_id, d_id, o_id):
-        rows = self.sess.execute(self.pre_get_items_info.bind((w_id, d_id, o_id)))
+        rows = self.sess.execute(self.pre_get_items_info.bind((w_id, d_id, o_id)), execution_profile=self.pro[0])
         total_amount = 0
         for item in rows:
             if item.ol_amount is None:
@@ -52,19 +56,18 @@ class Delivery():
             else:
                 amount = item.ol_amount
             total_amount += float(amount)
-            self.sess.execute(self.pre_update_ol_delivery_d.bind(
-            (datetime.now(), w_id, d_id, o_id, float(item.ol_quantity), item.ol_number, item.ol_i_id)))
+            self.sess.execute(self.pre_update_ol_delivery_d.bind((datetime.now(), w_id, d_id, o_id, float(item.ol_quantity), item.ol_number, item.ol_i_id)), execution_profile=self.pro[1])
         return total_amount
 
     def update_customer(self, w_id, d_id, o_id, total_amount):
-        rows = self.sess.execute(self.pre_get_customer_id.bind((w_id, d_id, o_id))).one()
+        rows = self.sess.execute(self.pre_get_customer_id.bind((w_id, d_id, o_id)), execution_profile=self.pro[0]).one()
         if rows is None:
             raise Exception('can not find customer')
         c_id = rows.o_c_id
-        rows = self.sess.execute(self.pre_get_customer_info.bind((w_id, d_id, c_id)))
+        rows = self.sess.execute(self.pre_get_customer_info.bind((w_id, d_id, c_id)), , execution_profile=self.pro[0])
         c_balance = rows.one().c_balance
         c_delivery_cnt = rows.one().c_delivery_cnt
-        self.sess.execute(self.pre_update_customer.bind((float(c_balance)+total_amount,c_delivery_cnt+1, w_id, d_id, c_id)))
+        self.sess.execute(self.pre_update_customer.bind((float(c_balance)+total_amount,c_delivery_cnt+1, w_id, d_id, c_id)), , execution_profile=self.pro[1])
 
     def exec_xact(self, w_id, carrier_id):
         for d_id in range(1, 11):

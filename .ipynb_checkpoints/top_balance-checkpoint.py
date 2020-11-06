@@ -1,7 +1,11 @@
 # top balance xact
 class TopBalance():
-    def __init__(self, sess):
+    def __init__(self, sess, level):
         self.sess = sess
+        if level == 'ONE':
+            self.pro = ['one', 'all']
+        elif level == 'QUORUM':
+            self.pro = ['quorum', 'quorum']
         self.pre_get_top_customers = sess.prepare(
             '''SELECT c_w_id, c_balance, c_d_id, c_first, c_middle, c_last, c_w_name, c_d_name
             FROM customer_sort_by_balance
@@ -9,7 +13,7 @@ class TopBalance():
         )
         
     def get_top_customers(self, w_id, num):
-        rows = self.sess.execute(self.pre_get_top_customers.bind((w_id, num)))
+        rows = self.sess.execute(self.pre_get_top_customers.bind((w_id, num)), execution_profile=self.pro[0])
         return list(rows)
 
     def exec_xact(self):

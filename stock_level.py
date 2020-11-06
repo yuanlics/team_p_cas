@@ -1,7 +1,11 @@
 # stock level xact
 class StockLevel():
-    def __init__(self, sess):
+    def __init__(self, sess, level):
         self.sess = sess
+        if level == 'ONE':
+            self.pro = ['one', 'all']
+        elif level == 'QUORUM':
+            self.pro = ['quorum', 'quorum']
         self.pre_get_next_id = sess.prepare(
             "SELECT d_next_o_id FROM district WHERE d_w_id = ? AND d_id = ?"
         )
@@ -13,17 +17,17 @@ class StockLevel():
         )
 
     def get_next_id(self, w_id, d_id):
-        rows = self.sess.execute(self.pre_get_next_id.bind((w_id, d_id)))
+        rows = self.sess.execute(self.pre_get_next_id.bind((w_id, d_id)), execution_profile=self.pro[0])
         return rows.one().d_next_o_id
 
     def get_item_ids(self, w_id, d_id, min_id, max_id):
-        rows = self.sess.execute(self.pre_get_item_ids.bind((w_id, d_id, min_id, max_id)))
+        rows = self.sess.execute(self.pre_get_item_ids.bind((w_id, d_id, min_id, max_id)), execution_profile=self.pro[0])
         return list(set([row.ol_i_id for row in rows]))
 
     def get_below_item_num(self, w_id, i_ids, thres):
         cnt = 0
         for i_id in i_ids:
-            rows = self.sess.execute(self.pre_get_quantity.bind((w_id, i_id)))
+            rows = self.sess.execute(self.pre_get_quantity.bind((w_id, i_id)), execution_profile=self.pro[0])
             if rows.one().s_quantity < thres:
                 cnt += 1
         return cnt
