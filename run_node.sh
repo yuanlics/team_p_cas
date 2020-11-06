@@ -9,6 +9,7 @@ node_id=$2
 n_clients=$3
 print=$4
 level=$5
+local_ip=$6
 
 echo $print
 
