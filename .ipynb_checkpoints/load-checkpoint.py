@@ -218,23 +218,25 @@ load_qs = [load_warehouse_q, load_district_q, load_customer_q, load_orders_q, lo
 
 cluster = Cluster(contact_points=[LOCALHOST]*20, connect_timeout=100)
 sess = cluster.connect()
+sess.default_timeout = 300.0
+print(sess.default_timeout)
 
-sess.execute(f"DROP KEYSPACE IF EXISTS {KEYSPACE}", timeout=300)
+sess.execute(f"DROP KEYSPACE IF EXISTS {KEYSPACE}")
 time.sleep(60)
-sess.execute(f"CREATE KEYSPACE {KEYSPACE} WITH replication = {{'class': '{REP_STRATEGY}', 'replication_factor' : {REP_FACTOR}}}", timeout=300)
-sess.execute(f"USE {KEYSPACE}", timeout=300)
+sess.execute(f"CREATE KEYSPACE {KEYSPACE} WITH replication = {{'class': '{REP_STRATEGY}', 'replication_factor' : {REP_FACTOR}}}")
+sess.execute(f"USE {KEYSPACE}")
 print('Keyspace is reset')
 
-sess.execute(create_warehouse_q, timeout=300)
-sess.execute(create_district_q, timeout=300)
-sess.execute(create_customer_q, timeout=300)
-sess.execute(create_orders_q, timeout=300)
-sess.execute(create_item_q, timeout=300)
-sess.execute(create_order_line_q, timeout=300)
-sess.execute(create_stock_q, timeout=300)
-sess.execute(create_view_customer_top_balance_q, timeout=300)
-sess.execute(create_view_order_by_customer_q, timeout=300)
-sess.execute(create_order_line_by_item_q, timeout=300)
+sess.execute(create_warehouse_q)
+sess.execute(create_district_q)
+sess.execute(create_customer_q)
+sess.execute(create_orders_q)
+sess.execute(create_item_q)
+sess.execute(create_order_line_q)
+sess.execute(create_stock_q)
+sess.execute(create_view_customer_top_balance_q)
+sess.execute(create_view_order_by_customer_q)
+sess.execute(create_order_line_by_item_q)
 print('Tables and views are created')
 
 # # augment customer with w_name and d_name

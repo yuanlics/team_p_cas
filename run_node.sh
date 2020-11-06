@@ -11,8 +11,6 @@ print=$4
 level=$5
 local_ip=$6
 
-echo $print
-
 mkdir -p ~/log
 
 for client_id in $(seq 1 $n_clients)

@@ -35,12 +35,14 @@ ip = args.ip
 
 cluster = Cluster(contact_points=[ip]*20, connect_timeout=100)
 if consist_level == 'ONE':
-    profile = ExecutionProfile(consistency_level=ConsistencyLevel.ONE)
+    profile = ExecutionProfile(consistency_level=ConsistencyLevel.ONE, request_timeout=300.0)
 elif consist_level == 'QUORUM':
-    profile = ExecutionProfile(consistency_level=ConsistencyLevel.QUORUM)
+    profile = ExecutionProfile(consistency_level=ConsistencyLevel.QUORUM, request_timeout=300.0)
 
 cluster.add_execution_profile('client', profile)
 sess = cluster.connect('wholesale')
+sess.default_timeout = 300.0
+print(sess.default_timeout)
 no = NewOrder(sess)
 pa = Payment(sess)
 de = Delivery(sess)
