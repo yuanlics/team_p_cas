@@ -37,8 +37,10 @@ ip = args.ip
 
 
 cluster = Cluster(contact_points=[ip]*20, connect_timeout=100)
-profile = ExecutionProfile(consistency_level=ConsistencyLevel.ALL)
-cluster.add_execution_profile('client', profile)
+profile = ExecutionProfile(consistency_level=ConsistencyLevel.ONE)
+cluster.add_execution_profile('one', profile)
+profile2 = ExecutionProfile(consistency_level=ConsistencyLevel.ALL)
+cluster.add_execution_profile('all', profile2)
 sess = cluster.connect('wholesale')
 sess.default_time_out=300
 # sess.default_consistency_level=ConsistencyLevel.ONE
