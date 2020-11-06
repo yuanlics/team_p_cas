@@ -37,11 +37,13 @@ ip = args.ip
 
 cluster = Cluster(contact_points=[ip]*20, connect_timeout=100)
 if consist_level == 'ONE':
+    print('one..')
     profile1 = ExecutionProfile(consistency_level=ConsistencyLevel.ONE, request_timeout=300.0)
     cluster.add_execution_profile('one', profile1)
     profile2 = ExecutionProfile(consistency_level=ConsistencyLevel.ALL, request_timeout=300.0)
     cluster.add_execution_profile('all', profile2)
 elif consist_level == 'QUORUM':
+    print('quorum..')
     profile = ExecutionProfile(consistency_level=ConsistencyLevel.QUORUM, request_timeout=300.0)
     cluster.add_execution_profile('quorum', profile)
 
