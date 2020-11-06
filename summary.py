@@ -17,6 +17,8 @@ ip = args.ip
 
 cluster = Cluster(contact_points=[ip]*20, connect_timeout=100)
 sess = cluster.connect('wholesale')
+sess.default_timeout = 300.0
+print(sess.default_timeout)
 
 res = []
 rows = sess.execute("SELECT sum(w_ytd) FROM warehouse")
@@ -36,11 +38,11 @@ rows = sess.execute("SELECT max(o_id), sum(o_ol_cnt) FROM orders")
 res.append(rows.one().system_max_o_id)
 res.append(float(rows.one().system_sum_o_ol_cnt))
 
-rows = sess.execute("SELECT sum(ol_amount), sum(ol_quantity) FROM order_line", timeout=100)
+rows = sess.execute("SELECT sum(ol_amount), sum(ol_quantity) FROM order_line")
 res.append(float(rows.one().system_sum_ol_amount))
 res.append(float(rows.one().system_sum_ol_quantity))
 
-rows = sess.execute("SELECT sum(s_quantity), sum(s_ytd), sum(s_order_cnt), sum(s_remote_cnt) FROM stock", timeout=100)
+rows = sess.execute("SELECT sum(s_quantity), sum(s_ytd), sum(s_order_cnt), sum(s_remote_cnt) FROM stock")
 res.append(float(rows.one().system_sum_s_quantity))
 res.append(float(rows.one().system_sum_s_ytd))
 res.append(rows.one().system_sum_s_order_cnt)
