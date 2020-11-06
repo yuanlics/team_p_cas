@@ -42,22 +42,22 @@ if consist_level == 'ONE':
     cluster.add_execution_profile('one', profile1)
     profile2 = ExecutionProfile(consistency_level=ConsistencyLevel.ALL, request_timeout=300.0)
     cluster.add_execution_profile('all', profile2)
-elif consist_level == 'QUORUM':
-    print('quorum..')
-    profile = ExecutionProfile(consistency_level=ConsistencyLevel.QUORUM, request_timeout=300.0)
-    cluster.add_execution_profile('quorum', profile)
+# elif consist_level == 'QUORUM':
+#     print('quorum..')
+#     profile = ExecutionProfile(consistency_level=ConsistencyLevel.QUORUM, request_timeout=300.0)
+#     cluster.add_execution_profile('quorum', profile)
 
 sess = cluster.connect('wholesale')
 sess.default_timeout = 300.0
 # print(sess.default_timeout)
-no = NewOrder(sess, consist_level)
-pa = Payment(sess, consist_level)
-de = Delivery(sess, consist_level)
-os = OrderStatus(sess, consist_level)
-sl = StockLevel(sess, consist_level)
-pi = PopularItem(sess, consist_level)
-tb = TopBalance(sess, consist_level)
-rc = RelatedCustomer(sess, consist_level)
+# no = NewOrder(sess, consist_level)
+# pa = Payment(sess, consist_level)
+# de = Delivery(sess, consist_level)
+# os = OrderStatus(sess, consist_level)
+# sl = StockLevel(sess, consist_level)
+# pi = PopularItem(sess, consist_level)
+# tb = TopBalance(sess, consist_level)
+# rc = RelatedCustomer(sess, consist_level)
 
 pre_get_deliver_id = sess.prepare(
             "SELECT d_next_o_id, d_next_deliver_o_id FROM district WHERE d_w_id = ? AND d_id = ?"
