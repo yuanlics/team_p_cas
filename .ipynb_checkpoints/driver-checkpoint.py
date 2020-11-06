@@ -2,6 +2,7 @@ import sys
 import csv
 import time
 import argparse
+import traceback
 import numpy as np
 
 from cassandra import ConsistencyLevel
@@ -98,7 +99,7 @@ with open(xact_dir+'/'+client_id+'.txt') as f:
                 sys.stdout.write('Xact: {0}\n{1}\n'.format(xact_cnt, res))
         except Exception as e:
             with open('err.txt','a') as f:
-                f.write(client_id+': '+str(inputs)+'\n'+str(e)+'\n')
+                f.write(client_id+': '+str(inputs)+'\n'+traceback.format_exc()+'\n')
             continue
 
 print(len(lines), row_cnt, xact_cnt)
