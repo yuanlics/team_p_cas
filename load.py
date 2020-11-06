@@ -14,7 +14,7 @@ args = parser.parse_args()
 DATA_DIR = args.data_dir
 CQL_DIR = args.cql_dir
 KEYSPACE = 'wholesale'
-LOCALHOST = args.ip
+ip = args.ip
 REP_STRATEGY = 'SimpleStrategy'
 REP_FACTOR = '3'
 
@@ -216,10 +216,10 @@ FROM '{DATA_DIR}/stock-aug.csv' WITH DELIMITER=',' '''
 
 load_qs = [load_warehouse_q, load_district_q, load_customer_q, load_orders_q, load_item_q, load_order_line_q, load_stock_q]
 
-cluster = Cluster(contact_points=[LOCALHOST]*20, connect_timeout=100)
+cluster = Cluster(contact_points=[ip]*20, connect_timeout=100)
 sess = cluster.connect()
 sess.default_timeout = 300.0
-print(sess.default_timeout)
+# print(sess.default_timeout)
 
 sess.execute(f"DROP KEYSPACE IF EXISTS {KEYSPACE}")
 time.sleep(60)
@@ -322,7 +322,7 @@ print('Tables and views are created')
 # print('district aug is created')
 
 for q in load_qs:
-    comm = CQL_DIR + ' -e "' + q + '"'
+    comm = CQL_DIR + ' ' + ip +' -e "' + q + '"'
 #     print(comm)
     res = os.popen(comm)
     out = res.read()

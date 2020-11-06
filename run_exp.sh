@@ -1,5 +1,7 @@
- #!/usr/bin/env bash
- 
+#!/usr/bin/env bash
+
+# python3 load.py --data-dir /temp/team_p/project-files/data-files/ --cql-dir /temp/team_p/apache-cassandra-3.11.6/bin/cqlsh --ip 192.168.48.184
+
 export local_ip=192.168.48.184
 export ips=(192.168.48.184 192.168.48.185 192.168.48.186 192.168.48.187 192.168.48.188)
 export print_terminal=false

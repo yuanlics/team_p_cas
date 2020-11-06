@@ -20,7 +20,7 @@ cluster = Cluster(contact_points=[ip]*20, connect_timeout=100)
 sess = cluster.connect('wholesale')
 sess.default_timeout = 3000.0
 sess.default_consistency_level = ConsistencyLevel.ALL
-print(sess.default_timeout)
+# print(sess.default_timeout)
 
 res = []
 rows = sess.execute("SELECT sum(w_ytd) FROM warehouse")

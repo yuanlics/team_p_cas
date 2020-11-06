@@ -46,7 +46,7 @@ elif consist_level == 'QUORUM':
 
 sess = cluster.connect('wholesale')
 sess.default_timeout = 300.0
-print(sess.default_timeout)
+# print(sess.default_timeout)
 no = NewOrder(sess, consist_level)
 pa = Payment(sess, consist_level)
 de = Delivery(sess, consist_level)

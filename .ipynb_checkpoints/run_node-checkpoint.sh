@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
-# bash run_node.sh /temp/team_p/project-files/xact-files <node_id> <n_clients> <True/False> <QUORUM/ONE>
+# bash run_node.sh /temp/team_p/project-files/xact-files/ <node_id> <n_clients> <True/False> <QUORUM/ONE>
 # E.g.
-# bash run_node.sh /temp/team_p/project-files/xact-files 1 10 False QUORUM
+# bash run_node.sh /temp/team_p/project-files/xact-files/ 1 10 False QUORUM
+# python3 driver.py --xact-dir /temp/team_p/project-files/xact-files/ --client-id 1 --print false --report-file foo.csv --level ONE --ip 192.168.48.184
 
 xact_dir=$1
 node_id=$2
