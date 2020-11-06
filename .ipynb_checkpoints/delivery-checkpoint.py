@@ -67,7 +67,7 @@ class Delivery():
         rows = self.sess.execute(self.pre_get_customer_info.bind((w_id, d_id, c_id)), , execution_profile=self.pro[0])
         c_balance = rows.one().c_balance
         c_delivery_cnt = rows.one().c_delivery_cnt
-        self.sess.execute(self.pre_update_customer.bind((float(c_balance)+total_amount,c_delivery_cnt+1, w_id, d_id, c_id)), , execution_profile=self.pro[1])
+        self.sess.execute(self.pre_update_customer.bind((float(c_balance)+total_amount,c_delivery_cnt+1, w_id, d_id, c_id)), execution_profile=self.pro[1])
 
     def exec_xact(self, w_id, carrier_id):
         for d_id in range(1, 11):
