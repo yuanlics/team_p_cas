@@ -8,7 +8,7 @@ parser = argparse.ArgumentParser(description='Summary')
 parser.add_argument('--nc', default='', type=str, help='Number of client')
 parser.add_argument('--level', default='', type=str, help='Consistency level')
 parser.add_argument('--ip', default='127.0.0.1', type=str, help='Local ip')
-parser.add_argument('--log_dir', default='/home/stuproj/cs4224p/log/', type=str, help='Local ip')
+parser.add_argument('--log_dir', default='/home/stuproj/cs4224p/log/', type=str, help='log dir')
 args = parser.parse_args()
 
 nc = args.nc
@@ -54,7 +54,7 @@ with open('log/' + nc+'_'+level+'_dbstate.csv', 'w') as f:
 
 throughputs = []
 for i in range(int(nc)):
-    with open(log_dir + nc+'_'+level+'_client'+str(i+1)+'.csv', 'r') as f:
+    with open(args.log_dir + nc+'_'+level+'_client'+str(i+1)+'.csv', 'r') as f:
         csv_reader = csv.reader(f)
         for row in csv_reader:
             throughputs.append(row[3])
