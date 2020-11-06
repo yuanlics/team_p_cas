@@ -37,13 +37,13 @@ ip = args.ip
 
 
 if consist_level == 'ONE':
-    profile1 = ExecutionProfile(consistency_level=ConsistencyLevel.ONE, request_timeout=300.0, load_balancing_policy=WhiteListRoundRobinPolicy(['192.168.48.184, 192.168.48.185, 192.168.48.186, 192.168.48.187, 192.168.48.188']))
+    profile1 = ExecutionProfile(consistency_level=ConsistencyLevel.ONE, request_timeout=300.0, load_balancing_policy=WhiteListRoundRobinPolicy(['192.168.48.184', '192.168.48.185', '192.168.48.186', '192.168.48.187', '192.168.48.188']))
 #     cluster.add_execution_profile('one', profile1)
-    profile2 = ExecutionProfile(consistency_level=ConsistencyLevel.ALL, request_timeout=300.0, load_balancing_policy=WhiteListRoundRobinPolicy(['192.168.48.184, 192.168.48.185, 192.168.48.186, 192.168.48.187, 192.168.48.188']))
+    profile2 = ExecutionProfile(consistency_level=ConsistencyLevel.ALL, request_timeout=300.0, load_balancing_policy=WhiteListRoundRobinPolicy(['192.168.48.184', '192.168.48.185', '192.168.48.186', '192.168.48.187', '192.168.48.188']))
 #     cluster.add_execution_profile('all', profile2)
     profiles = {'one': profile1, 'all': profile2}
 elif consist_level == 'QUORUM':
-    profile = ExecutionProfile(consistency_level=ConsistencyLevel.QUORUM, request_timeout=300.0, load_balancing_policy=WhiteListRoundRobinPolicy(['192.168.48.184, 192.168.48.185, 192.168.48.186, 192.168.48.187, 192.168.48.188']))
+    profile = ExecutionProfile(consistency_level=ConsistencyLevel.QUORUM, request_timeout=300.0, load_balancing_policy=WhiteListRoundRobinPolicy(['192.168.48.184', '192.168.48.185', '192.168.48.186', '192.168.48.187', '192.168.48.188']))
 #     cluster.add_execution_profile('quorum', profile)
     profiles = {'quorum': profile, 'quorum': profile}
 
