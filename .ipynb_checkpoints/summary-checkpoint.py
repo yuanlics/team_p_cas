@@ -21,7 +21,7 @@ sess.default_timeout = 3000.0
 print(sess.default_timeout)
 
 res = []
-rows = sess.execute("SELECT sum(w_ytd) FROM warehouse")
+rows = sess.execute("SELECT sum(w_ytd) FROM warehouse", timeout=3000)
 res.append(float(rows.one().system_sum_w_ytd))
 
 rows = sess.execute("SELECT sum(d_ytd), sum(d_next_o_id) FROM district")
