@@ -221,8 +221,8 @@ sess = cluster.connect()
 
 sess.execute(f"DROP KEYSPACE IF EXISTS {KEYSPACE}", timeout=300)
 time.sleep(60)
-sess.execute(f"CREATE KEYSPACE {KEYSPACE} WITH replication = {{'class': '{REP_STRATEGY}', 'replication_factor' : {REP_FACTOR}}}")
-sess.execute(f"USE {KEYSPACE}")
+sess.execute(f"CREATE KEYSPACE {KEYSPACE} WITH replication = {{'class': '{REP_STRATEGY}', 'replication_factor' : {REP_FACTOR}}}", timeout=300)
+sess.execute(f"USE {KEYSPACE}", timeout=300)
 print('Keyspace is reset')
 
 sess.execute(create_warehouse_q, timeout=300)
