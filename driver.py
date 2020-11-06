@@ -59,6 +59,13 @@ pi = PopularItem(sess, consist_level)
 tb = TopBalance(sess, consist_level)
 rc = RelatedCustomer(sess, consist_level)
 
+pre_get_deliver_id = sess.prepare(
+            "SELECT d_next_o_id, d_next_deliver_o_id FROM district WHERE d_w_id = ? AND d_id = ?"
+        )
+rows = sess.execute(pre_get_deliver_id.bind((1, 1)), execution_profile='one')
+for row in rows:
+    print(row)
+
 w_id = 1
 d_id = 1
 c_id = 1232
