@@ -47,7 +47,11 @@ class Delivery():
         rows = self.sess.execute(self.pre_get_items_info.bind((w_id, d_id, o_id)))
         total_amount = 0
         for item in rows:
-            total_amount += float(item.ol_amount)
+            if item.ol_amount is None:
+                amount = 0
+            else:
+                amount = item.ol_amount
+            total_amount += float(amount)
             self.sess.execute(self.pre_update_ol_delivery_d.bind(
             (datetime.now(), w_id, d_id, o_id, float(item.ol_quantity), item.ol_number, item.ol_i_id)))
         return total_amount
