@@ -51,7 +51,7 @@ class NewOrder():
     def insert_order(self, w_id, d_id, c_id, o_id, o_entry_d, num_items, supplier_warehouse_arr):
         local_arr = [1 if sup_w_id == w_id else 0 for sup_w_id in supplier_warehouse_arr]
         all_local = min(local_arr)
-        self.sess.execute(self.pre_insert_order.bind((o_id, d_id, w_id, c_id, o_entry_d, num_items, all_local)), , execution_profile=self.pro[1])
+        self.sess.execute(self.pre_insert_order.bind((o_id, d_id, w_id, c_id, o_entry_d, num_items, all_local)), execution_profile=self.pro[1])
         return o_entry_d
     
     def update_stock_and_order_line(self, w_id, d_id, o_id, num_items, item_number_arr, supplier_warehouse_arr, quantity_arr, w_tax, d_tax, c_discount):
