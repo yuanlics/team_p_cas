@@ -59,7 +59,7 @@ class Delivery():
     def update_customer(self, w_id, d_id, o_id, total_amount):
         rows = self.sess.execute(self.pre_get_customer_id.bind((w_id, d_id, o_id))).one()
         if rows is None:
-            return
+            raise Exception('can not find customer')
         c_id = rows.o_c_id
         rows = self.sess.execute(self.pre_get_customer_info.bind((w_id, d_id, c_id)))
         c_balance = rows.one().c_balance

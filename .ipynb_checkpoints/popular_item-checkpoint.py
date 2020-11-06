@@ -29,7 +29,7 @@ class PopularItem():
     def get_popular_items(self, w_id, d_id, o_id):
         rows = self.sess.execute(self.pre_get_top_quantity.bind((w_id, d_id, o_id))).one()
         if rows is None:
-            return None
+            raise Exception('can not find top quantity')
         rows = self.sess.execute(self.pre_get_items.bind((w_id, d_id, o_id, rows.ol_quantity)))
         return list(rows)
 
@@ -43,7 +43,7 @@ class PopularItem():
             custom = self.get_customer(w_id, d_id, order.o_c_id)
             items = self.get_popular_items(w_id, d_id, order.o_id)
             if items is None:
-                return None
+                raise Exception('can not find popular items')
             items_list = []
             for item in items:
                 i_id = item.ol_i_id
