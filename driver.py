@@ -9,6 +9,7 @@ from cassandra import ConsistencyLevel
 from cassandra.cluster import Cluster
 from cassandra.cluster import ExecutionProfile
 from cassandra.cluster import EXEC_PROFILE_DEFAULT
+from cassandra.policies import WhiteListRoundRobinPolicy
 
 from new_order import NewOrder
 from payment import Payment
@@ -36,13 +37,13 @@ ip = args.ip
 
 
 if consist_level == 'ONE':
-    profile1 = ExecutionProfile(consistency_level=ConsistencyLevel.ONE, request_timeout=300.0)
+    profile1 = ExecutionProfile(consistency_level=ConsistencyLevel.ONE, request_timeout=300.0, load_balancing_policy=WhiteListRoundRobinPolicy(['192.168.48.184, 192.168.48.185, 192.168.48.186, 192.168.48.187, 192.168.48.188']))
 #     cluster.add_execution_profile('one', profile1)
-    profile2 = ExecutionProfile(consistency_level=ConsistencyLevel.ALL, request_timeout=300.0)
+    profile2 = ExecutionProfile(consistency_level=ConsistencyLevel.ALL, request_timeout=300.0, load_balancing_policy=WhiteListRoundRobinPolicy(['192.168.48.184, 192.168.48.185, 192.168.48.186, 192.168.48.187, 192.168.48.188']))
 #     cluster.add_execution_profile('all', profile2)
     profiles = {'one': profile1, 'all': profile2}
 elif consist_level == 'QUORUM':
-    profile = ExecutionProfile(consistency_level=ConsistencyLevel.QUORUM, request_timeout=300.0)
+    profile = ExecutionProfile(consistency_level=ConsistencyLevel.QUORUM, request_timeout=300.0, load_balancing_policy=WhiteListRoundRobinPolicy(['192.168.48.184, 192.168.48.185, 192.168.48.186, 192.168.48.187, 192.168.48.188']))
 #     cluster.add_execution_profile('quorum', profile)
     profiles = {'quorum': profile, 'quorum': profile}
 
