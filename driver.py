@@ -47,14 +47,14 @@ elif consist_level == 'QUORUM':
 sess = cluster.connect('wholesale')
 sess.default_timeout = 300.0
 print(sess.default_timeout)
-no = NewOrder(sess, level)
-pa = Payment(sess, level)
-de = Delivery(sess, level)
-os = OrderStatus(sess, level)
-sl = StockLevel(sess, level)
-pi = PopularItem(sess, level)
-tb = TopBalance(sess, level)
-rc = RelatedCustomer(sess, level)
+no = NewOrder(sess, consist_level)
+pa = Payment(sess, consist_level)
+de = Delivery(sess, consist_level)
+os = OrderStatus(sess, consist_level)
+sl = StockLevel(sess, consist_level)
+pi = PopularItem(sess, consist_level)
+tb = TopBalance(sess, consist_level)
+rc = RelatedCustomer(sess, consist_level)
 
 with open(xact_dir+'/'+client_id+'.txt') as f:
     lines = f.readlines()
