@@ -33,17 +33,19 @@ client_id = args.client_id
 consist_level = args.level
 ip = args.ip
 
-cluster = Cluster(contact_points=[ip]*20, connect_timeout=100)
+
 if consist_level == 'ONE':
     profile1 = ExecutionProfile(consistency_level=ConsistencyLevel.ONE, request_timeout=300.0)
-    cluster.add_execution_profile('one', profile1)
+#     cluster.add_execution_profile('one', profile1)
     profile2 = ExecutionProfile(consistency_level=ConsistencyLevel.ALL, request_timeout=300.0)
-    cluster.add_execution_profile('all', profile2)
+#     cluster.add_execution_profile('all', profile2)
+    profiles = {'one': profile1, 'all': profile2}
 elif consist_level == 'QUORUM':
     profile = ExecutionProfile(consistency_level=ConsistencyLevel.QUORUM, request_timeout=300.0)
-    cluster.add_execution_profile('quorum', profile)
+#     cluster.add_execution_profile('quorum', profile)
+    profiles = {'quorum': profile, 'quorum': profile}
 
-
+cluster = Cluster(contact_points=[ip]*20, connect_timeout=100, execution_profiles={EXEC_PROFILE_DEFAULT: profiles})
 sess = cluster.connect('wholesale')
 sess.default_timeout = 300.0
 # print(sess.default_timeout)
