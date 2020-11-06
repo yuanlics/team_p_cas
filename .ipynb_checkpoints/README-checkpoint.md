@@ -12,11 +12,11 @@ On each node, enter the project directory and run:
     
 For our example, run the following lines on each node:
 
-    bash config.sh 192.168.48.184 "192.168.48.184, 192.168.48.185, 192.168.48.186" /temp/team_p/apache-cassandra-3.11.6/
-    bash config.sh 192.168.48.185 "192.168.48.184, 192.168.48.185, 192.168.48.186" /temp/team_p/apache-cassandra-3.11.6/
-    bash config.sh 192.168.48.186 "192.168.48.184, 192.168.48.185, 192.168.48.186" /temp/team_p/apache-cassandra-3.11.6/
-    bash config.sh 192.168.48.187 "192.168.48.184, 192.168.48.185, 192.168.48.186" /temp/team_p/apache-cassandra-3.11.6/
-    bash config.sh 192.168.48.188 "192.168.48.184, 192.168.48.185, 192.168.48.186" /temp/team_p/apache-cassandra-3.11.6/
+    bash config.sh 192.168.48.184 "192.168.48.184, 192.168.48.185, 192.168.48.186, 192.168.48.187, 192.168.48.188" /temp/team_p/apache-cassandra-3.11.6/
+    bash config.sh 192.168.48.185 "192.168.48.184, 192.168.48.185, 192.168.48.186, 192.168.48.187, 192.168.48.188" /temp/team_p/apache-cassandra-3.11.6/
+    bash config.sh 192.168.48.186 "192.168.48.184, 192.168.48.185, 192.168.48.186, 192.168.48.187, 192.168.48.188" /temp/team_p/apache-cassandra-3.11.6/
+    bash config.sh 192.168.48.187 "192.168.48.184, 192.168.48.185, 192.168.48.186, 192.168.48.187, 192.168.48.188" /temp/team_p/apache-cassandra-3.11.6/
+    bash config.sh 192.168.48.188 "192.168.48.184, 192.168.48.185, 192.168.48.186, 192.168.48.187, 192.168.48.188" /temp/team_p/apache-cassandra-3.11.6/
    
 ## Run Experiment
 

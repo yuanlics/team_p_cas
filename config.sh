@@ -9,7 +9,7 @@ cassandra_dir=$3
 pushd $cassandra_dir
 
 sed -i "s/^cluster_name: 'Test Cluster'\$/cluster_name: 'ClusterP'/g" conf/cassandra.yaml
-sed -i "s/seeds: \"127.0.0.1:7000\"\$/seeds: \"${seed_ips}\"/g" conf/cassandra.yaml
+sed -i "s/seeds: \"*\"\$/seeds: \"${seed_ips}\"/g" conf/cassandra.yaml
 sed -i "s/^listen_address: localhost\$/listen_address: ${local_ip}/g" conf/cassandra.yaml
 sed -i "s/^rpc_address: localhost\$/rpc_address: ${local_ip}/g" conf/cassandra.yaml
 sed -i "s/^endpoint_snitch: SimpleSnitch$/endpoint_snitch: GossipingPropertyFileSnitch/g" conf/cassandra.yaml
