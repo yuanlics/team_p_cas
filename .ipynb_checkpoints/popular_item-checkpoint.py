@@ -27,8 +27,10 @@ class PopularItem():
         return rows.one()
     
     def get_popular_items(self, w_id, d_id, o_id):
-        rows = self.sess.execute(self.pre_get_top_quantity.bind((w_id, d_id, o_id)))
-        rows = self.sess.execute(self.pre_get_items.bind((w_id, d_id, o_id, rows.one().ol_quantity)))
+        rows = self.sess.execute(self.pre_get_top_quantity.bind((w_id, d_id, o_id))).one()
+        if rows is None:
+            return None
+        rows = self.sess.execute(self.pre_get_items.bind((w_id, d_id, o_id, rows.ol_quantity)))
         return list(rows)
 
     def exec_xact(self, w_id, d_id, order_num):
@@ -40,6 +42,8 @@ class PopularItem():
         for order in orders:
             custom = self.get_customer(w_id, d_id, order.o_c_id)
             items = self.get_popular_items(w_id, d_id, order.o_id)
+            if items is None:
+                return None
             items_list = []
             for item in items:
                 i_id = item.ol_i_id
@@ -47,10 +51,14 @@ class PopularItem():
                     items_dict[i_id] = [item.ol_i_name, 1]
                 else:
                     items_dict[i_id][1] += 1
-
+                
+                if item.ol_quantity is None:
+                    q = 0
+                else:
+                    q = item.ol_quantity
                 items_list.append({
                     'i_name': item.ol_i_name,
-                    'i_quantity': float(item.ol_quantity),
+                    'i_quantity': float(q),
                 })
 
             orders_list.append({
