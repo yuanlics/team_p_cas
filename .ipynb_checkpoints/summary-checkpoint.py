@@ -57,7 +57,7 @@ for i in range(int(nc)):
     with open(args.log_dir + nc+'_'+level+'_client'+str(i+1)+'.csv', 'r') as f:
         csv_reader = csv.reader(f)
         for row in csv_reader:
-            throughputs.append(row[3])
+            throughputs.append(float(row[3]))
 
 with open('log/' + nc+'_'+level+'_throughput.csv', 'w') as f:
     writer = csv.writer(f)
