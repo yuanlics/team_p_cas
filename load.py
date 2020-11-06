@@ -218,7 +218,7 @@ load_qs = [load_warehouse_q, load_district_q, load_customer_q, load_orders_q, lo
 cluster = Cluster(contact_points=[LOCALHOST]*20, connect_timeout=100)
 sess = cluster.connect()
 
-sess.execute(f"DROP KEYSPACE IF EXISTS {KEYSPACE}", timeout=300)
+sess.execute(f"DROP KEYSPACE IF EXISTS {KEYSPACE}", timeout=3000)
 sess.execute(f"CREATE KEYSPACE {KEYSPACE} WITH replication = {{'class': '{REP_STRATEGY}', 'replication_factor' : {REP_FACTOR}}}")
 sess.execute(f"USE {KEYSPACE}")
 print('Keyspace is reset')
