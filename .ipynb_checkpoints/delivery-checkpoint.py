@@ -57,8 +57,10 @@ class Delivery():
         return total_amount
 
     def update_customer(self, w_id, d_id, o_id, total_amount):
-        rows = self.sess.execute(self.pre_get_customer_id.bind((w_id, d_id, o_id)))
-        c_id = rows.one().o_c_id
+        rows = self.sess.execute(self.pre_get_customer_id.bind((w_id, d_id, o_id))).one()
+        if rows is None:
+            return
+        c_id = rows.o_c_id
         rows = self.sess.execute(self.pre_get_customer_info.bind((w_id, d_id, c_id)))
         c_balance = rows.one().c_balance
         c_delivery_cnt = rows.one().c_delivery_cnt
