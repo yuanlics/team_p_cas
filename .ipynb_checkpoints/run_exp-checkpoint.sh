@@ -11,7 +11,7 @@ export cassandra_root=/temp/team_p/apache-cassandra-3.11.6/
 export cql_dir=/temp/team_p/apache-cassandra-3.11.6/bin/cqlsh
 export project_dir=/temp/team_p/team_p_cas/
 
-for n_clients in 40
+for n_clients in 20
 do
     for level in ONE
     do
