@@ -64,6 +64,8 @@ class Delivery():
         if rows is None:
             raise Exception('can not find customer')
         c_id = rows.o_c_id
+        if c_id is None:
+            raise Exception('can not find customer')
         rows = self.sess.execute(self.pre_get_customer_info.bind((w_id, d_id, c_id)), execution_profile=self.pro[0])
         c_balance = rows.one().c_balance
         c_delivery_cnt = rows.one().c_delivery_cnt
