@@ -35,12 +35,12 @@ ip = args.ip
 
 cluster = Cluster(contact_points=[ip]*20, connect_timeout=100)
 if consist_level == 'ONE':
-    profile1 = ExecutionProfile(consistency_level=ConsistencyLevel.ONE, request_timeout=300.0)
+    profile1 = ExecutionProfile(consistency_level=ConsistencyLevel.ONE, request_timeout=120.0)
     cluster.add_execution_profile('one', profile1)
-    profile2 = ExecutionProfile(consistency_level=ConsistencyLevel.ALL, request_timeout=300.0)
+    profile2 = ExecutionProfile(consistency_level=ConsistencyLevel.ALL, request_timeout=120.0)
     cluster.add_execution_profile('all', profile2)
 elif consist_level == 'QUORUM':
-    profile = ExecutionProfile(consistency_level=ConsistencyLevel.QUORUM, request_timeout=300.0)
+    profile = ExecutionProfile(consistency_level=ConsistencyLevel.QUORUM, request_timeout=120.0)
     cluster.add_execution_profile('quorum', profile)
 
 sess = cluster.connect('wholesale')
@@ -55,91 +55,75 @@ pi = PopularItem(sess, consist_level)
 tb = TopBalance(sess, consist_level)
 rc = RelatedCustomer(sess, consist_level)
 
+with open(xact_dir+'/'+client_id+'.txt') as f:
+    lines = f.readlines()
+    xact_cnt = 0
+    row_cnt = 0
+    latency = []
+    t1 = time.time()
+    while row_cnt < len(lines):
+        inputs = lines[row_cnt].strip('\n').split(',')
+        row_cnt += 1
+        category = inputs[0]
+        try:
+            t3 = time.time()
+            if category == 'N':
+                i_id = []
+                w_id = []
+                quantity = []
+                num_items = int(inputs[4])
+                tmp = row_cnt
+                while row_cnt < tmp+num_items:
+                    item = lines[row_cnt].strip('\n').split(',')
+                    row_cnt += 1
+                    i_id.append(int(item[0]))
+                    w_id.append(int(item[1]))
+                    quantity.append(int(item[2]))
+                res = no.exec_xact(int(inputs[1]), int(inputs[2]), int(inputs[3]), num_items, i_id, w_id, quantity)
+            elif category == 'P':
+                res = pa.exec_xact(int(inputs[1]), int(inputs[2]), int(inputs[3]), float(inputs[4]))
+            elif category == 'D':
+                res = de.exec_xact(int(inputs[1]), int(inputs[2]))
+            elif category == 'O':
+                res = os.exec_xact(int(inputs[1]), int(inputs[2]), int(inputs[3]))
+            elif category == 'S':
+                res = sl.exec_xact(int(inputs[1]), int(inputs[2]), int(inputs[3]), int(inputs[4]))
+            elif category == 'I':
+                res = pi.exec_xact(int(inputs[1]), int(inputs[2]), int(inputs[3]))
+            elif category == 'T':
+                res = tb.exec_xact()         
+            elif category == 'R':
+                res = rc.exec_xact(int(inputs[1]), int(inputs[2]), int(inputs[3]))
 
-res = de.exec_xact(1,1)
-print(res)
+            t4 = time.time()
+            latency.append(round((t4-t3)*1000,2))
+            xact_cnt += 1
+#             print('Client', client_id, 'Current Xact:', xact_cnt)
 
-res = os.exec_xact(1,2,1081)
-print(res)
+            if args.print:
+                sys.stdout.write('Xact: {0}\n{1}\n'.format(xact_cnt, res))
+        except Exception as e:
+            with open('err.txt','a') as f:
+                f.write(client_id+': '+str(inputs)+'\n'+traceback.format_exc()+'\n')
+            continue
 
-res = pi.exec_xact(1,1,2)
-print(res)
+print(xact_cnt)
+t2 = time.time()
+exec_time = round(t2-t1,2)
+throughput = round(xact_cnt/exec_time,2)
 
-res = tb.exec_xact()
-print(res)
+l_mean = round(np.mean(latency),2)
+l_median = round(np.median(latency),2)
+l_per95 = round(np.percentile(latency, 95),2)
+l_per99 = round(np.percentile(latency, 99),2)
 
-res = sl.exec_xact(1,1,13,34)
-print(res)
+if args.print:
+    sys.stderr.write(f'Client {client_id}:\nXact Num {xact_cnt}; Exec Time {exec_time}; ' +
+                     f'Throughput {throughput}; Average Latency {l_mean}; Median Latency {l_median}; ' +
+                     f'95th Percentile Latency {l_per95}; 99th Percentile Latency {l_per99}\n')
 
-# with open(xact_dir+'/'+client_id+'.txt') as f:
-#     lines = f.readlines()
-#     xact_cnt = 0
-#     row_cnt = 0
-#     latency = []
-#     t1 = time.time()
-#     while row_cnt < len(lines):
-#         inputs = lines[row_cnt].strip('\n').split(',')
-#         row_cnt += 1
-#         category = inputs[0]
-#         try:
-#             t3 = time.time()
-#             if category == 'N':
-#                 i_id = []
-#                 w_id = []
-#                 quantity = []
-#                 num_items = int(inputs[4])
-#                 tmp = row_cnt
-#                 while row_cnt < tmp+num_items:
-#                     item = lines[row_cnt].strip('\n').split(',')
-#                     row_cnt += 1
-#                     i_id.append(int(item[0]))
-#                     w_id.append(int(item[1]))
-#                     quantity.append(int(item[2]))
-#                 res = no.exec_xact(int(inputs[1]), int(inputs[2]), int(inputs[3]), num_items, i_id, w_id, quantity)
-#             elif category == 'P':
-#                 res = pa.exec_xact(int(inputs[1]), int(inputs[2]), int(inputs[3]), float(inputs[4]))
-#             elif category == 'D':
-#                 res = de.exec_xact(int(inputs[1]), int(inputs[2]))
-#             elif category == 'O':
-#                 res = os.exec_xact(int(inputs[1]), int(inputs[2]), int(inputs[3]))
-#             elif category == 'S':
-#                 res = sl.exec_xact(int(inputs[1]), int(inputs[2]), int(inputs[3]), int(inputs[4]))
-#             elif category == 'I':
-#                 res = pi.exec_xact(int(inputs[1]), int(inputs[2]), int(inputs[3]))
-#             elif category == 'T':
-#                 res = tb.exec_xact()         
-#             elif category == 'R':
-#                 res = rc.exec_xact(int(inputs[1]), int(inputs[2]), int(inputs[3]))
-
-#             t4 = time.time()
-#             latency.append(round((t4-t3)*1000,2))
-#             xact_cnt += 1
-# #             print('Client', client_id, 'Current Xact:', xact_cnt)
-
-#             if args.print:
-#                 sys.stdout.write('Xact: {0}\n{1}\n'.format(xact_cnt, res))
-#         except Exception as e:
-#             with open('err.txt','a') as f:
-#                 f.write(client_id+': '+str(inputs)+'\n'+traceback.format_exc()+'\n')
-#             continue
-
-# print(xact_cnt)
-# t2 = time.time()
-# exec_time = round(t2-t1,2)
-# throughput = round(xact_cnt/exec_time,2)
-
-# l_mean = round(np.mean(latency),2)
-# l_median = round(np.median(latency),2)
-# l_per95 = round(np.percentile(latency, 95),2)
-# l_per99 = round(np.percentile(latency, 99),2)
-
-# if args.print:
-#     sys.stderr.write(f'Client {client_id}:\nXact Num {xact_cnt}; Exec Time {exec_time}; ' +
-#                      f'Throughput {throughput}; Average Latency {l_mean}; Median Latency {l_median}; ' +
-#                      f'95th Percentile Latency {l_per95}; 99th Percentile Latency {l_per99}\n')
-
-# with open(args.report_file, 'w') as f:
-#     writer = csv.writer(f)
-# #     writer.writerow(['client_number', 'measurement_a', 'measurement_b', 'measurement_c', 'measurement_d',
-# #                      'measurement_e', 'measurement_f', 'measurement_g'])
-#     writer.writerow([client_id, xact_cnt, exec_time, throughput, l_mean, l_median, l_per95, l_per99])
+with open(args.report_file, 'w') as f:
+    writer = csv.writer(f)
+#     writer.writerow(['client_number', 'measurement_a', 'measurement_b', 'measurement_c', 'measurement_d',
+#                      'measurement_e', 'measurement_f', 'measurement_g'])
+    writer.writerow([client_id, xact_cnt, exec_time, throughput, l_mean, l_median, l_per95, l_per99])
