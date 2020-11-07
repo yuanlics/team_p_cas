@@ -12,7 +12,7 @@ for nc in ncs:
             with open(log_dir+nc+'_'+level+'_client'+str(i+1)+'.csv', 'r') as f:
                 csv_reader = csv.reader(f)
                 for row in csv_reader:
-                    temp = [str(exp_cnt), str(i+1)] + row
+                    temp = [str(exp_cnt)] + row
                     clients.append(temp)
         exp_cnt += 1
 
