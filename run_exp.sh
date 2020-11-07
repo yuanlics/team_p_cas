@@ -13,7 +13,7 @@ export project_dir=/temp/team_p/team_p_cas/
 
 for n_clients in 40
 do
-    for level in QUORUM
+    for level in ONE
     do
         echo "Start experiment $n_clients $level"
         ssh xcnc35 "cd $project_dir && git pull && python3 load.py --data-dir $data_dir --cql-dir $cql_dir --ip $local_ip"

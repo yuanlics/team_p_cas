@@ -107,7 +107,7 @@ with open(xact_dir+'/'+client_id+'.txt') as f:
                 f.write(client_id+': '+str(inputs)+'\n'+traceback.format_exc()+'\n')
             continue
 
-print(xact_cnt)
+print(client_id, xact_cnt)
 t2 = time.time()
 exec_time = round(t2-t1,2)
 throughput = round(xact_cnt/exec_time,2)
