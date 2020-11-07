@@ -8,8 +8,6 @@ import numpy as np
 from cassandra import ConsistencyLevel
 from cassandra.cluster import Cluster
 from cassandra.cluster import ExecutionProfile
-# from cassandra.cluster import EXEC_PROFILE_DEFAULT
-# from cassandra.policies import WhiteListRoundRobinPolicy
 
 from new_order import NewOrder
 from payment import Payment
@@ -37,41 +35,26 @@ ip = args.ip
 
 cluster = Cluster(contact_points=[ip]*20, connect_timeout=100)
 if consist_level == 'ONE':
-    print('one..')
     profile1 = ExecutionProfile(consistency_level=ConsistencyLevel.ONE, request_timeout=300.0)
     cluster.add_execution_profile('one', profile1)
-#     profile2 = ExecutionProfile(consistency_level=ConsistencyLevel.ALL, request_timeout=300.0)
-#     cluster.add_execution_profile('all', profile2)
-# elif consist_level == 'QUORUM':
-#     print('quorum..')
-#     profile = ExecutionProfile(consistency_level=ConsistencyLevel.QUORUM, request_timeout=300.0)
-#     cluster.add_execution_profile('quorum', profile)
+    profile2 = ExecutionProfile(consistency_level=ConsistencyLevel.ALL, request_timeout=300.0)
+    cluster.add_execution_profile('all', profile2)
+elif consist_level == 'QUORUM':
+    profile = ExecutionProfile(consistency_level=ConsistencyLevel.QUORUM, request_timeout=300.0)
+    cluster.add_execution_profile('quorum', profile)
 
 sess = cluster.connect('wholesale')
-sess.default_timeout = 300.0
+# sess.default_timeout = 300.0
 # print(sess.default_timeout)
-# no = NewOrder(sess, consist_level)
-# pa = Payment(sess, consist_level)
-# de = Delivery(sess, consist_level)
-# os = OrderStatus(sess, consist_level)
-# sl = StockLevel(sess, consist_level)
-# pi = PopularItem(sess, consist_level)
-# tb = TopBalance(sess, consist_level)
-# rc = RelatedCustomer(sess, consist_level)
+no = NewOrder(sess, consist_level)
+pa = Payment(sess, consist_level)
+de = Delivery(sess, consist_level)
+os = OrderStatus(sess, consist_level)
+sl = StockLevel(sess, consist_level)
+pi = PopularItem(sess, consist_level)
+tb = TopBalance(sess, consist_level)
+rc = RelatedCustomer(sess, consist_level)
 
-pre_get_deliver_id = sess.prepare(
-            "SELECT d_next_o_id, d_next_deliver_o_id FROM district WHERE d_w_id = ? AND d_id = ?"
-        )
-rows = sess.execute(pre_get_deliver_id.bind((1, 1)), execution_profile='one')
-for row in rows:
-    print(row)
-
-w_id = 1
-d_id = 1
-c_id = 1232
-payment = 3156.05
-res = pa.exec_xact(w_id, d_id, c_id, payment)
-print(res)
 
 res = de.exec_xact(1,1)
 print(res)
