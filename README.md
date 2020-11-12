@@ -24,4 +24,4 @@ On node 1, edit the configurations in `run_exp.sh`, then run the following line 
 
     bash run_exp.sh
     
-The corresponding csv results are saved in `~/log/`
+The corresponding csv results are saved in `~/log/` and `./log`
