@@ -6,8 +6,8 @@ from cassandra.cluster import Cluster
 import time
 
 parser = argparse.ArgumentParser(description='Load')
-parser.add_argument('--data-dir', default='/home/liyuan/data1/distdb/project-files/data-files', type=str, help='Data directory')
-parser.add_argument('--cql-dir', default='/home/liyuan/data1/distdb/apache-cassandra-3.11.6/bin/cqlsh', type=str, help='CQL directory')
+parser.add_argument('--data-dir', default='', type=str, help='Data directory')
+parser.add_argument('--cql-dir', default='', type=str, help='CQL directory')
 parser.add_argument('--ip', default='127.0.0.1', type=str, help='Local ip')
 args = parser.parse_args()
 

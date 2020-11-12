@@ -10,6 +10,7 @@ export xact_dir=/temp/team_p/project-files/xact-files/
 export cassandra_root=/temp/team_p/apache-cassandra-3.11.6/
 export cql_dir=/temp/team_p/apache-cassandra-3.11.6/bin/cqlsh
 export project_dir=/temp/team_p/team_p_cas/
+export log_dir=/home/stuproj/cs4224p/log/
 
 for n_clients in 20 40
 do
@@ -25,7 +26,7 @@ do
         ssh xcnc39 "cd $project_dir && git pull && bash run_node.sh $xact_dir 5 $n_clients $print_terminal $level ${ips[4]}" &
         wait
         echo "All nodes finished"
-        ssh xcnc35 "cd $project_dir && python3 summary.py --nc $n_clients --level $level --ip $local_ip"
+        ssh xcnc35 "cd $project_dir && python3 summary.py --nc $n_clients --level $level --ip $local_ip --log-dir $log_dir"
         echo "Finished experiment $n_clients $level"
     done
 

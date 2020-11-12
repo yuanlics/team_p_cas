@@ -8,7 +8,7 @@ parser = argparse.ArgumentParser(description='Summary')
 parser.add_argument('--nc', default='', type=str, help='Number of client')
 parser.add_argument('--level', default='', type=str, help='Consistency level')
 parser.add_argument('--ip', default='127.0.0.1', type=str, help='Local ip')
-parser.add_argument('--log_dir', default='/home/stuproj/cs4224p/log/', type=str, help='log dir')
+parser.add_argument('--log-dir', default='/home/stuproj/cs4224p/log/', type=str, help='log dir')
 args = parser.parse_args()
 
 nc = args.nc
