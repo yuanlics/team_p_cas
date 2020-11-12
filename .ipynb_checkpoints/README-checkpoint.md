@@ -1,8 +1,8 @@
-# team_p_cas
+# Cassandra Database Implementation
 
 ## Requirements
 
-Make sure `python3, python-pandas, python-cassandra-driver` are installed.
+Make sure `python3, python-pandas, python-cassandra-driver` are installed and make sure this repository is cloned on each node via `git clone https://github.com/yuanlics/team_p_cas`
     
 ## Configure Cassandra
 
